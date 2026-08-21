@@ -1,0 +1,16 @@
+/node_modules
+/dist
+/web/node_modules
+/web/dist
+/public/index.html
+/public/assets
+/public/__manus__
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+.env*
+
+app.log
