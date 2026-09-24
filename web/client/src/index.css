@@ -290,14 +290,39 @@ img { max-width: 100%; }
 .section-sub { font-size: 17px; line-height: 1.75; color: var(--muted); max-width: 52ch; margin: 0; }
 .section-head { max-width: 720px; margin-bottom: 72px; }
 
+/* ---------- Endpoint ticker ---------- */
+.ticker {
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: var(--bg-soft); overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+.ticker-track { display: flex; width: max-content; animation: ticker-slide 38s linear infinite; }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+@keyframes ticker-slide { to { transform: translateX(-50%); } }
+.ticker-item {
+  display: flex; align-items: center; gap: 14px;
+  background: none; border: 0; cursor: pointer; padding: 17px 30px;
+}
+.ticker-item .method-pill { padding: 5px 13px; }
+.ticker-path {
+  font-family: var(--font-mono); font-size: 13px; color: var(--muted);
+  white-space: nowrap; transition: color 0.25s;
+}
+.ticker-item:hover .ticker-path { color: var(--ivory); }
+.ticker-sep { color: var(--faint); font-size: 13px; }
+
 /* ---------- Showcase marquee ---------- */
 .showcase-section { padding: 148px 0 0; overflow: hidden; }
+.marquee-rows { margin-top: 72px; }
 .marquee {
-  margin-top: 72px; overflow: hidden;
+  overflow: hidden;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
+.marquee + .marquee { margin-top: 26px; }
 .marquee-track { display: flex; width: max-content; animation: marquee-slide 48s linear infinite; }
+.marquee-track.reverse { animation-direction: reverse; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 @keyframes marquee-slide { to { transform: translateX(-50%); } }
 .marquee-card { width: 330px; margin-right: 22px; flex-shrink: 0; }
@@ -321,6 +346,7 @@ img { max-width: 100%; }
   overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
 }
 .image-break .bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.image-break .parallax-img { scale: 1.24; }
 .image-break .veil {
   position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(10,10,11,0.78), rgba(10,10,11,0.28) 42%, rgba(10,10,11,0.82));
@@ -520,6 +546,8 @@ img { max-width: 100%; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   .marquee-track { animation: none !important; }
+  .ticker-track { animation: none !important; }
+  .ticker { overflow-x: auto; }
   .marquee { overflow-x: auto; }
   .reveal-hidden { opacity: 1; transform: none !important; filter: none !important; }
 }

@@ -27,7 +27,9 @@ import Magnetic from "../components/motion/Magnetic";
 import OtpConsole from "../components/motion/OtpConsole";
 import DrawCheck from "../components/motion/DrawCheck";
 import Counter from "../components/motion/Counter";
-import ImageMarquee from "../components/motion/ImageMarquee";
+import ImageMarquee, { OTP_SLIDES, CRAFT_SLIDES } from "../components/motion/ImageMarquee";
+import EndpointTicker from "../components/motion/EndpointTicker";
+import ImageBreak from "../components/motion/ImageBreak";
 import FlowDiagram, { type FlowKind } from "../components/motion/FlowDiagram";
 import EndpointAccordion, { type Endpoint } from "../components/motion/EndpointAccordion";
 import CodeCard from "../components/motion/CodeCard";
@@ -265,12 +267,18 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ---------- Endpoint ticker ---------- */}
+        <EndpointTicker
+          items={endpoints.map((e) => ({ method: e.method as "POST" | "GET", path: e.path }))}
+          onSelect={() => scrollTo("endpoints")}
+        />
+
         {/* ---------- Showcase: sliding gallery ---------- */}
         <section className="showcase-section" aria-label="The craft">
           <div className="site-shell">
             <Reveal>
               <div className="section-head">
-                <p className="kicker">THE CRAFT</p>
+                <p className="kicker">01 · THE CRAFT</p>
                 <h2 className="section-title">Built like an <span className="serif-accent">instrument</span>.</h2>
                 <p className="section-sub">
                   Every verification is a small ceremony — issued, delivered,
@@ -280,7 +288,10 @@ export default function Home() {
             </Reveal>
           </div>
           <Reveal delay={0.1}>
-            <ImageMarquee />
+            <div className="marquee-rows">
+              <ImageMarquee slides={OTP_SLIDES} label="Verification moments gallery" duration={52} />
+              <ImageMarquee slides={CRAFT_SLIDES} label="Optora craft gallery" reverse duration={60} />
+            </div>
             <div className="marquee-note">
               <span className="mono">HOVER TO PAUSE</span>
             </div>
@@ -292,7 +303,7 @@ export default function Home() {
           <div className="site-shell flows-layout">
             <div>
               <Reveal>
-                <p className="kicker">TWO ROUTES TO VERIFIED</p>
+                <p className="kicker">02 · TWO ROUTES TO VERIFIED</p>
                 <h2 className="section-title">One intent.<br /><span className="serif-accent">Two clean exits.</span></h2>
                 <p className="section-sub">
                   Choose the interaction your product needs. Optora takes care of
@@ -340,33 +351,20 @@ export default function Home() {
         </section>
 
         {/* ---------- Full-bleed visual break ---------- */}
-        <section className="image-break" aria-label="The Obsidian standard">
-          <img
-            className="bg-img"
-            src="/assets/showcase-monolith.webp"
-            alt="Dark obsidian monolith with a thin blue edge of light"
-            loading="lazy"
-            decoding="async"
-          />
-          <div className="veil" aria-hidden="true" />
-          <div className="site-shell image-break-inner">
-            <Reveal>
-              <p className="kicker" style={{ color: "var(--ivory-dim)" }}>THE OBSIDIAN STANDARD</p>
-              <p className="serif-line">Security you never have to think about.</p>
-              <p className="break-sub">
-                Five endpoints. Two flows. One quiet layer between your product
-                and everyone else&apos;s inbox.
-              </p>
-            </Reveal>
-          </div>
-        </section>
+        <ImageBreak
+          src="/assets/showcase-monolith.webp"
+          alt="Dark obsidian monolith with a thin blue edge of light"
+          kicker="THE OBSIDIAN STANDARD"
+          line="Security you never have to think about."
+          sub="Five endpoints. Two flows. One quiet layer between your product and everyone else's inbox."
+        />
 
         {/* ---------- Endpoints ---------- */}
         <section id="endpoints" className="section section-anchor" style={{ background: "var(--bg-soft)", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
           <div className="site-shell">
             <Reveal>
               <div className="section-head">
-                <p className="kicker">THE API SURFACE</p>
+                <p className="kicker">03 · THE API SURFACE</p>
                 <h2 className="section-title">Small surface.<br />Complete control.</h2>
                 <p className="section-sub">
                   Five endpoints cover every critical moment — from sending a code
@@ -395,7 +393,7 @@ export default function Home() {
           <div className="site-shell">
             <Reveal>
               <div className="section-head">
-                <p className="kicker">THE GUARDRAILS</p>
+                <p className="kicker">04 · THE GUARDRAILS</p>
                 <h2 className="section-title">Verification logic<br />that holds the line.</h2>
                 <p className="section-sub">
                   Security should be a property of the route, not a collection of
