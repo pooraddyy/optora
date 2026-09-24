@@ -1,10 +1,8 @@
-/** Design: The Verification Ledger — a light, high-contrast editorial surface for the Optora product story. */
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+/** Optora — Obsidian Console. Dark-only; motion respects the OS reduced-motion setting. */
+import { MotionConfig } from "framer-motion";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 
 function Router() {
@@ -20,12 +18,9 @@ function Router() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ThemeProvider>
+      <MotionConfig reducedMotion="user">
+        <Router />
+      </MotionConfig>
     </ErrorBoundary>
   );
 }
