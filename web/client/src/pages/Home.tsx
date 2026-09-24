@@ -1,10 +1,8 @@
 /**
- * Optora — Obsidian Console redesign.
- * Dark editorial surface, hairline rules, one signal blue. Motion vocabulary
- * drawn from rareui (owned single-file components), obsidianui (tactile
- * details), transitions.dev (micro-transitions), designspells (small magic),
- * libraries.dev (live tiles + copy actions) and details.so (considered
- * sections: preloader, hero, footer, transitions between).
+ * Optora — Obsidian Atelier (premium pass).
+ * Preloader kept as-is. Editorial serif accents, a sliding AI-generated
+ * image gallery, and a full-bleed visual break elevate the Obsidian
+ * Console system into something quieter and more confident.
  */
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,6 +27,7 @@ import Magnetic from "../components/motion/Magnetic";
 import OtpConsole from "../components/motion/OtpConsole";
 import DrawCheck from "../components/motion/DrawCheck";
 import Counter from "../components/motion/Counter";
+import ImageMarquee from "../components/motion/ImageMarquee";
 import FlowDiagram, { type FlowKind } from "../components/motion/FlowDiagram";
 import EndpointAccordion, { type Endpoint } from "../components/motion/EndpointAccordion";
 import CodeCard from "../components/motion/CodeCard";
@@ -221,7 +220,7 @@ export default function Home() {
                 <Reveal delay={0.08}>
                   <h1 className="hero-title">
                     Email trust, reduced to one{" "}
-                    <BlurCycle words={["reliable", "quiet", "exact"]} /> request.
+                    <BlurCycle words={["reliable", "quiet", "exact"]} className="blur-word serif-accent" /> request.
                   </h1>
                 </Reveal>
                 <Reveal delay={0.16}>
@@ -266,13 +265,35 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ---------- Showcase: sliding gallery ---------- */}
+        <section className="showcase-section" aria-label="The craft">
+          <div className="site-shell">
+            <Reveal>
+              <div className="section-head">
+                <p className="kicker">THE CRAFT</p>
+                <h2 className="section-title">Built like an <span className="serif-accent">instrument</span>.</h2>
+                <p className="section-sub">
+                  Every verification is a small ceremony — issued, delivered,
+                  confirmed, gone. Nothing decorative. Nothing left behind.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+          <Reveal delay={0.1}>
+            <ImageMarquee />
+            <div className="marquee-note">
+              <span className="mono">HOVER TO PAUSE</span>
+            </div>
+          </Reveal>
+        </section>
+
         {/* ---------- Flows ---------- */}
         <section id="flows" className="section section-anchor">
           <div className="site-shell flows-layout">
             <div>
               <Reveal>
                 <p className="kicker">TWO ROUTES TO VERIFIED</p>
-                <h2 className="section-title">One intent.<br />Two clean exits.</h2>
+                <h2 className="section-title">One intent.<br /><span className="serif-accent">Two clean exits.</span></h2>
                 <p className="section-sub">
                   Choose the interaction your product needs. Optora takes care of
                   expiry, delivery, blocking, and the confirmation trail behind
@@ -314,6 +335,28 @@ export default function Home() {
                   <FlowDiagram flow={flow} />
                 </motion.div>
               </AnimatePresence>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ---------- Full-bleed visual break ---------- */}
+        <section className="image-break" aria-label="The Obsidian standard">
+          <img
+            className="bg-img"
+            src="/assets/showcase-monolith.webp"
+            alt="Dark obsidian monolith with a thin blue edge of light"
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="veil" aria-hidden="true" />
+          <div className="site-shell image-break-inner">
+            <Reveal>
+              <p className="kicker" style={{ color: "var(--ivory-dim)" }}>THE OBSIDIAN STANDARD</p>
+              <p className="serif-line">Security you never have to think about.</p>
+              <p className="break-sub">
+                Five endpoints. Two flows. One quiet layer between your product
+                and everyone else&apos;s inbox.
+              </p>
             </Reveal>
           </div>
         </section>
@@ -386,7 +429,7 @@ export default function Home() {
             <Reveal>
               <div className="closing-mark"><BrandMark size={68} /></div>
               <p className="kicker" style={{ textAlign: "center" }}>A QUIETLY RELIABLE LAYER</p>
-              <h2 className="closing-title">Let identity verification disappear into the product.</h2>
+              <h2 className="closing-title">Let identity verification <span className="serif-accent">disappear</span> into the product.</h2>
               <p className="closing-sub">
                 Self-host it in minutes. Five endpoints, two flows, zero
                 verification logic left for you to write.
