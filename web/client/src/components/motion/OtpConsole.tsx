@@ -1,4 +1,4 @@
-/* OtpConsole — the hero's live verification console.
+/* OtpConsole — the hero's interactive verification console.
    Motion vocabulary (transitions.dev): number pop-in with digit flip + blur +
    stagger, thinking-state shimmer, spinner-to-check morph, success check with
    blur + rotate, toast rise with fade + blur + scale, error-state shake.
@@ -81,8 +81,8 @@ export default function OtpConsole() {
       <Tilt className="console-card" max={6}>
         <div className="console-bar">
           <div className="window-dots" aria-hidden="true"><i /><i /><i /></div>
-          <span className="mono">OPTORA — LIVE TRACE</span>
-          <span className="console-live"><i /> SANDBOX</span>
+          <span className="mono">OPTORA — API TRACE</span>
+          <span className="console-live"><i /> SIMULATED</span>
         </div>
 
         <div className="console-body" key={shakeKey} data-phase={phase}>
@@ -120,7 +120,7 @@ export default function OtpConsole() {
               </motion.div>
             )}
 
-            {(phase === "code" || phase === "verifying" || phase === "verified") && (
+            {(phase === "idle" || phase === "code" || phase === "verifying" || phase === "verified") && (
               <motion.div
                 key="cells"
                 initial={{ opacity: 0 }}
@@ -128,79 +128,90 @@ export default function OtpConsole() {
                 exit={{ opacity: 0 }}
               >
                 <div className="console-label" style={{ textAlign: "center", marginBottom: 12 }}>
-                  {phase === "verified" ? "CODE ACCEPTED" : "ENTER THE 6-DIGIT CODE"}
+                  {phase === "verified" ? "CODE ACCEPTED" : phase === "idle" ? "AWAITING CODE" : "ENTER THE 6-DIGIT CODE"}
                 </div>
-                <div className="otp-cells" aria-label={`One-time code ${digits.join("")}`}>
-                  {digits.map((d, i) => (
-                    <div
-                      key={i}
-                      className={`otp-cell ${phase !== "code" && phase !== "verifying" ? "" : "filled"} ${phase === "verified" ? "verified" : ""}`}
-                    >
-                      <AnimatePresence mode="popLayout">
-                        <motion.span
-                          key={`${i}-${d}-${phase}`}
-                          initial={{ opacity: 0, rotateX: -90, filter: "blur(6px)", y: 10 }}
-                          animate={{ opacity: 1, rotateX: 0, filter: "blur(0px)", y: 0 }}
-                          exit={{ opacity: 0, rotateX: 90, filter: "blur(6px)", y: -10 }}
-                          transition={{
-                            duration: 0.38,
-                            delay: phase === "code" ? 0.08 + i * 0.07 : 0,
-                            ease: [0.22, 1, 0.36, 1],
-                          }}
-                          style={{ display: "inline-block", transformStyle: "preserve-3d" }}
-                        >
-                          {d}
-                        </motion.span>
-                      </AnimatePresence>
-                    </div>
-                  ))}
+                <div className="otp-cells" aria-label={digits.length ? `One-time code ${digits.join("")}` : "One-time code placeholder"}>
+                  {Array.from({ length: 6 }, (_, i) => {
+                    const d = digits[i];
+                    const filled = d !== undefined && phase !== "idle";
+                    return (
+                      <div
+                        key={i}
+                        className={`otp-cell ${filled ? "filled" : ""} ${phase === "verified" ? "verified" : ""}`}
+                        style={phase === "idle" ? { opacity: 0.45 } : undefined}
+                      >
+                        {filled && (
+                          <AnimatePresence mode="popLayout">
+                            <motion.span
+                              key={`${i}-${d}-${phase}`}
+                              initial={{ opacity: 0, rotateX: -90, filter: "blur(6px)", y: 10 }}
+                              animate={{ opacity: 1, rotateX: 0, filter: "blur(0px)", y: 0 }}
+                              exit={{ opacity: 0, rotateX: 90, filter: "blur(6px)", y: -10 }}
+                              transition={{
+                                duration: 0.38,
+                                delay: phase === "code" ? 0.08 + i * 0.07 : 0,
+                                ease: [0.22, 1, 0.36, 1],
+                              }}
+                              style={{ display: "inline-block", transformStyle: "preserve-3d" }}
+                            >
+                              {d}
+                            </motion.span>
+                          </AnimatePresence>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
 
-                <div className="console-status" style={{ marginTop: 16 }}>
-                  <span className="mono">
-                    {phase === "verified" ? (
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "#41d97e" }}>
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5, filter: "blur(6px)", rotate: -30 }}
-                          animate={{ opacity: 1, scale: 1, filter: "blur(0px)", rotate: 0 }}
-                          transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
-                          style={{ display: "inline-flex" }}
-                        >
-                          <Check size={14} strokeWidth={3} />
-                        </motion.span>
-                        VERIFIED · WEBHOOK DISPATCHED
+                {phase !== "idle" && (
+                  <>
+                    <div className="console-status" style={{ marginTop: 16 }}>
+                      <span className="mono">
+                        {phase === "verified" ? (
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "#41d97e" }}>
+                            <motion.span
+                              initial={{ opacity: 0, scale: 0.5, filter: "blur(6px)", rotate: -30 }}
+                              animate={{ opacity: 1, scale: 1, filter: "blur(0px)", rotate: 0 }}
+                              transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+                              style={{ display: "inline-flex" }}
+                            >
+                              <Check size={14} strokeWidth={3} />
+                            </motion.span>
+                            VERIFIED · WEBHOOK DISPATCHED
+                          </span>
+                        ) : phase === "verifying" ? (
+                          <span className="shimmer-text shimmer-anim">CHECKING CODE…</span>
+                        ) : (
+                          "AWAITING USER ACTION"
+                        )}
                       </span>
-                    ) : phase === "verifying" ? (
-                      <span className="shimmer-text shimmer-anim">CHECKING CODE…</span>
-                    ) : (
-                      "AWAITING USER ACTION"
-                    )}
-                  </span>
-                  {phase !== "verified" && <span className="console-timer">{formatTtl(ttl)}</span>}
-                </div>
+                      {phase !== "verified" && <span className="console-timer">{formatTtl(ttl)}</span>}
+                    </div>
 
-                <div className="console-actions" style={{ marginTop: 18 }}>
-                  {phase === "code" && (
-                    <>
-                      <button className="console-btn" onClick={verify}>
-                        <ShieldCheck size={15} /> Verify code
-                      </button>
-                      <button className="console-btn ghost" onClick={generate} aria-label="Regenerate code">
-                        <RotateCcw size={15} />
-                      </button>
-                    </>
-                  )}
-                  {phase === "verifying" && (
-                    <button className="console-btn" disabled>
-                      Verifying…
-                    </button>
-                  )}
-                  {phase === "verified" && (
-                    <button className="console-btn ghost" onClick={reset}>
-                      <RotateCcw size={15} /> Run it again
-                    </button>
-                  )}
-                </div>
+                    <div className="console-actions" style={{ marginTop: 18 }}>
+                      {phase === "code" && (
+                        <>
+                          <button className="console-btn" onClick={verify}>
+                            <ShieldCheck size={15} /> Verify code
+                          </button>
+                          <button className="console-btn ghost" onClick={generate} aria-label="Regenerate code">
+                            <RotateCcw size={15} />
+                          </button>
+                        </>
+                      )}
+                      {phase === "verifying" && (
+                        <button className="console-btn" disabled>
+                          Verifying…
+                        </button>
+                      )}
+                      {phase === "verified" && (
+                        <button className="console-btn ghost" onClick={reset}>
+                          <RotateCcw size={15} /> Run it again
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

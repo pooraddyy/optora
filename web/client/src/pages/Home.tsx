@@ -1,8 +1,8 @@
 /**
- * Optora — Obsidian Atelier (premium pass).
- * Preloader kept as-is. Editorial serif accents, a sliding AI-generated
- * image gallery, and a full-bleed visual break elevate the Obsidian
- * Console system into something quieter and more confident.
+ * Optora — Obsidian Atelier, second edition.
+ * A minimal, editorial single page: stacked hero with an interactive sandbox,
+ * numbered sections, real integration code, and a quiet self-host path.
+ * Preloader kept as-is; all motion stays restrained.
  */
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +10,7 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   ChevronRight,
+  Gauge,
   Github,
   KeyRound,
   Link2,
@@ -20,19 +21,19 @@ import {
   X,
 } from "lucide-react";
 import Preloader from "../components/motion/Preloader";
-import BlurCycle from "../components/motion/BlurCycle";
 import Reveal from "../components/motion/Reveal";
 import Tilt from "../components/motion/Tilt";
 import Magnetic from "../components/motion/Magnetic";
 import OtpConsole from "../components/motion/OtpConsole";
 import DrawCheck from "../components/motion/DrawCheck";
 import Counter from "../components/motion/Counter";
+import CopyButton from "../components/motion/CopyButton";
 import ImageMarquee, { OTP_SLIDES, CRAFT_SLIDES } from "../components/motion/ImageMarquee";
 import EndpointTicker from "../components/motion/EndpointTicker";
 import ImageBreak from "../components/motion/ImageBreak";
+import CodeTabs from "../components/motion/CodeTabs";
 import FlowDiagram, { type FlowKind } from "../components/motion/FlowDiagram";
 import EndpointAccordion, { type Endpoint } from "../components/motion/EndpointAccordion";
-import CodeCard from "../components/motion/CodeCard";
 
 const REPO = "https://github.com/pooraddyy/optora";
 const DOCS = "https://github.com/pooraddyy/optora/blob/main/docs/API.md";
@@ -86,8 +87,30 @@ const endpoints: Endpoint[] = [
   },
 ];
 
+const QUICKSTART = [
+  {
+    num: "01",
+    title: "Clone and install",
+    cmds: ["git clone https://github.com/pooraddyy/optora.git", "cd optora && npm ci"],
+    note: "Node 18 or later.",
+  },
+  {
+    num: "02",
+    title: "Configure",
+    cmds: ["cp sample.env .env"],
+    note: "Add your MongoDB URI and a Gmail app password. Never commit it.",
+  },
+  {
+    num: "03",
+    title: "Run",
+    cmds: ["npm run dev"],
+    note: "The API serves on :5000; the frontend builds from the same repo.",
+  },
+];
+
 const NAV = [
   { id: "flows", label: "Flows" },
+  { id: "integrate", label: "Integrate" },
   { id: "endpoints", label: "Endpoints" },
   { id: "security", label: "Security" },
 ];
@@ -204,60 +227,70 @@ export default function Home() {
       </header>
 
       <main id="top">
-        {/* ---------- Hero ---------- */}
-        <section className="hero-section">
+        {/* ---------- Hero: stacked statement + interactive sandbox ---------- */}
+        <section className="hero-section hero-stacked">
           <div className="hero-grid-bg" aria-hidden="true" />
           <div className="hero-glow" aria-hidden="true" />
           <div className="site-shell">
-            <div className="hero-layout">
-              <div>
-                <Reveal>
-                  <div className="eyebrow-row">
-                    <span className="signal-dot" />
-                    <span className="mono">EMAIL VERIFICATION API</span>
-                    <span className="mono" style={{ color: "var(--line-strong)" }}>·</span>
-                    <span className="mono">SELF-HOSTED</span>
-                  </div>
-                </Reveal>
-                <Reveal delay={0.08}>
-                  <h1 className="hero-title">
-                    Email trust, reduced to one{" "}
-                    <BlurCycle words={["reliable", "quiet", "exact"]} className="blur-word serif-accent" /> request.
-                  </h1>
-                </Reveal>
-                <Reveal delay={0.16}>
-                  <p className="hero-description">
-                    A lightweight API for secure OTP codes and magic links — built for
-                    backend teams who would rather ship product than rebuild
-                    verification logic.
-                  </p>
-                </Reveal>
-                <Reveal delay={0.24}>
-                  <div className="hero-actions">
-                    <Magnetic>
-                      <button className="btn-primary" onClick={() => scrollTo("endpoints")}>
-                        Inspect the API <ArrowDownRight size={17} />
-                      </button>
-                    </Magnetic>
-                    <button className="btn-ghost" onClick={() => scrollTo("flows")}>
-                      See both flows <ChevronRight size={16} />
+            <div className="hero-top">
+              <Reveal>
+                <div className="eyebrow-row">
+                  <span className="signal-dot" />
+                  <span className="mono">SELF-HOSTED</span>
+                  <span className="mono" style={{ color: "var(--line-strong)" }}>·</span>
+                  <span className="mono">EMAIL VERIFICATION API</span>
+                </div>
+              </Reveal>
+              <Reveal delay={0.08}>
+                <h1 className="hero-title">
+                  Email verification,<br />done <span className="serif-accent">quietly</span>.
+                </h1>
+              </Reveal>
+              <Reveal delay={0.16}>
+                <p className="hero-description">
+                  Optora is a self-hosted API for OTP codes and magic links —
+                  five endpoints, two flows, and none of the verification
+                  plumbing left for you to write.
+                </p>
+              </Reveal>
+              <Reveal delay={0.24}>
+                <div className="hero-actions">
+                  <Magnetic>
+                    <button className="btn-primary" onClick={() => scrollTo("sandbox")}>
+                      Try the interactive sandbox <ArrowDownRight size={17} />
                     </button>
-                  </div>
-                </Reveal>
-                <Reveal delay={0.32}>
-                  <div className="hero-evidence">
-                    {["Rate limited", "TTL managed", "Webhook-ready"].map((t, i) => (
-                      <span key={t}>
-                        <DrawCheck delay={0.5 + i * 0.15} /> {t}
-                      </span>
-                    ))}
-                  </div>
-                </Reveal>
-              </div>
+                  </Magnetic>
+                  <a className="btn-ghost" href={DOCS} target="_blank" rel="noreferrer">
+                    Read the API guide <ArrowUpRight size={16} />
+                  </a>
+                </div>
+              </Reveal>
+              <Reveal delay={0.32}>
+                <div className="hero-evidence">
+                  {["Rate limited", "TTL managed", "Webhook-ready"].map((t, i) => (
+                    <span key={t}>
+                      <DrawCheck delay={0.5 + i * 0.15} /> {t}
+                    </span>
+                  ))}
+                </div>
+              </Reveal>
+            </div>
 
-              <Reveal delay={0.2} y={36}>
+            <div id="sandbox" className="sandbox-wrap section-anchor">
+              <Reveal>
+                <div className="sandbox-steps">
+                  {["Enter an email", "Receive the code", "Verify before the TTL"].map((s, i) => (
+                    <div className="sandbox-step" key={s}>
+                      <span className="mono">0{i + 1}</span>
+                      <span>{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
+              <Reveal delay={0.12} y={36}>
                 <OtpConsole />
               </Reveal>
+              <p className="sandbox-note mono">INTERACTIVE SANDBOX — SIMULATED API LIFECYCLE, NO REQUEST SENT</p>
             </div>
 
             <div className="hero-strip">
@@ -273,37 +306,12 @@ export default function Home() {
           onSelect={() => scrollTo("endpoints")}
         />
 
-        {/* ---------- Showcase: sliding gallery ---------- */}
-        <section className="showcase-section" aria-label="The craft">
-          <div className="site-shell">
-            <Reveal>
-              <div className="section-head">
-                <p className="kicker">01 · THE CRAFT</p>
-                <h2 className="section-title">Built like an <span className="serif-accent">instrument</span>.</h2>
-                <p className="section-sub">
-                  Every verification is a small ceremony — issued, delivered,
-                  confirmed, gone. Nothing decorative. Nothing left behind.
-                </p>
-              </div>
-            </Reveal>
-          </div>
-          <Reveal delay={0.1}>
-            <div className="marquee-rows">
-              <ImageMarquee slides={OTP_SLIDES} label="Verification moments gallery" duration={52} />
-              <ImageMarquee slides={CRAFT_SLIDES} label="Optora craft gallery" reverse duration={60} />
-            </div>
-            <div className="marquee-note">
-              <span className="mono">HOVER TO PAUSE</span>
-            </div>
-          </Reveal>
-        </section>
-
-        {/* ---------- Flows ---------- */}
+        {/* ---------- 01 Flows ---------- */}
         <section id="flows" className="section section-anchor">
           <div className="site-shell flows-layout">
             <div>
               <Reveal>
-                <p className="kicker">02 · TWO ROUTES TO VERIFIED</p>
+                <p className="kicker">01 · TWO ROUTES TO VERIFIED</p>
                 <h2 className="section-title">One intent.<br /><span className="serif-accent">Two clean exits.</span></h2>
                 <p className="section-sub">
                   Choose the interaction your product needs. Optora takes care of
@@ -350,21 +358,59 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ---------- Full-bleed visual break ---------- */}
-        <ImageBreak
-          src="/assets/showcase-monolith.webp"
-          alt="Dark obsidian monolith with a thin blue edge of light"
-          kicker="THE OBSIDIAN STANDARD"
-          line="Security you never have to think about."
-          sub="Five endpoints. Two flows. One quiet layer between your product and everyone else's inbox."
-        />
+        {/* ---------- 02 The craft: sliding gallery ---------- */}
+        <section className="showcase-section" aria-label="The craft">
+          <div className="site-shell">
+            <Reveal>
+              <div className="section-head">
+                <p className="kicker">02 · THE CRAFT</p>
+                <h2 className="section-title">Built like an <span className="serif-accent">instrument</span>.</h2>
+                <p className="section-sub">
+                  Every verification is a small ceremony — issued, delivered,
+                  confirmed, gone. Nothing decorative. Nothing left behind.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+          <Reveal delay={0.1}>
+            <div className="marquee-rows">
+              <ImageMarquee slides={OTP_SLIDES} label="Verification moments gallery" duration={52} />
+              <ImageMarquee slides={CRAFT_SLIDES} label="Optora craft gallery" reverse duration={60} />
+            </div>
+            <div className="marquee-note">
+              <span className="mono">HOVER TO PAUSE</span>
+            </div>
+          </Reveal>
+        </section>
 
-        {/* ---------- Endpoints ---------- */}
+        {/* ---------- 03 Integrate ---------- */}
+        <section id="integrate" className="section section-anchor">
+          <div className="site-shell">
+            <Reveal>
+              <div className="section-head">
+                <p className="kicker">03 · INTEGRATE</p>
+                <h2 className="section-title">Two requests.<br />That&apos;s the <span className="serif-accent">integration</span>.</h2>
+                <p className="section-sub">
+                  Send a code, then verify it. The same contract in every
+                  language — pick your tab and paste.
+                </p>
+              </div>
+            </Reveal>
+            <Reveal delay={0.08}>
+              <CodeTabs />
+              <p className="integrate-note">
+                Server-to-server only. Never call these endpoints from an untrusted browser or client.
+              </p>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ---------- 04 Endpoints ---------- */}
         <section id="endpoints" className="section section-anchor" style={{ background: "var(--bg-soft)", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
           <div className="site-shell">
             <Reveal>
               <div className="section-head">
-                <p className="kicker">03 · THE API SURFACE</p>
+                <p className="kicker">04 · THE API SURFACE</p>
                 <h2 className="section-title">Small surface.<br />Complete control.</h2>
                 <p className="section-sub">
                   Five endpoints cover every critical moment — from sending a code
@@ -375,7 +421,6 @@ export default function Home() {
             <Reveal delay={0.08}>
               <EndpointAccordion endpoints={endpoints} />
             </Reveal>
-            <CodeCard />
           </div>
         </section>
 
@@ -388,12 +433,47 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ---------- Security ---------- */}
-        <section id="security" className="section section-anchor">
+        {/* ---------- 05 Self-host ---------- */}
+        <section className="section">
           <div className="site-shell">
             <Reveal>
               <div className="section-head">
-                <p className="kicker">04 · THE GUARDRAILS</p>
+                <p className="kicker">05 · SELF-HOST</p>
+                <h2 className="section-title">Yours in <span className="serif-accent">three steps</span>.</h2>
+                <p className="section-sub">
+                  No accounts, no dashboards, no per-email pricing. Clone it,
+                  point it at your database and mailer, and run.
+                </p>
+              </div>
+            </Reveal>
+            <div className="quick-grid">
+              {QUICKSTART.map((q, i) => (
+                <Reveal key={q.num} delay={i * 0.09} y={30}>
+                  <div className="quick-card">
+                    <span className="mono">{q.num}</span>
+                    <h3>{q.title}</h3>
+                    <div className="quick-cmds">
+                      {q.cmds.map((c) => (
+                        <div className="quick-cmd" key={c}>
+                          <code>{c}</code>
+                          <CopyButton text={c} label="Copy" />
+                        </div>
+                      ))}
+                    </div>
+                    <p>{q.note}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---------- 06 Security ---------- */}
+        <section id="security" className="section section-anchor" style={{ paddingTop: 0 }}>
+          <div className="site-shell">
+            <Reveal>
+              <div className="section-head">
+                <p className="kicker">06 · THE GUARDRAILS</p>
                 <h2 className="section-title">Verification logic<br />that holds the line.</h2>
                 <p className="section-sub">
                   Security should be a property of the route, not a collection of
@@ -402,11 +482,12 @@ export default function Home() {
                 </p>
               </div>
             </Reveal>
-            <div className="guard-grid">
+            <div className="guard-grid guard-grid-4">
               {[
                 { icon: <LockKeyhole size={20} />, title: "Cryptographically secure", text: "OTPs are generated with Node crypto — never a predictable random helper.", num: "01" },
                 { icon: <TimerReset size={20} />, title: "Expiry by default", text: "MongoDB TTL indexes clean up expired records without scheduled maintenance.", num: "02" },
-                { icon: <Webhook size={20} />, title: "Webhook confirmation", text: "Know the instant a magic link resolves, in the system you already run.", num: "03" },
+                { icon: <Gauge size={20} />, title: "Rate limited", text: "Five requests per fifteen-minute window by default, with domain allowlists and keyword filters.", num: "03" },
+                { icon: <Webhook size={20} />, title: "Webhook confirmation", text: "Know the instant a magic link resolves, in the system you already run.", num: "04" },
               ].map((g, i) => (
                 <Reveal key={g.title} delay={i * 0.09} y={30}>
                   <Tilt className="guard-card" max={5} glareClass="guard-glare">
@@ -421,13 +502,22 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ---------- Full-bleed visual break ---------- */}
+        <ImageBreak
+          src="/assets/showcase-monolith.webp"
+          alt="Dark obsidian monolith with a thin blue edge of light"
+          kicker="THE OBSIDIAN STANDARD"
+          line="Security you never have to think about."
+          sub="Five endpoints. Two flows. One quiet layer between your product and everyone else's inbox."
+        />
+
         {/* ---------- Closing ---------- */}
         <section className="closing-section">
           <div className="site-shell">
             <Reveal>
               <div className="closing-mark"><BrandMark size={68} /></div>
-              <p className="kicker" style={{ textAlign: "center" }}>A QUIETLY RELIABLE LAYER</p>
-              <h2 className="closing-title">Let identity verification <span className="serif-accent">disappear</span> into the product.</h2>
+              <p className="kicker" style={{ textAlign: "center" }}>SELF-HOSTED · MIT LICENSED</p>
+              <h2 className="closing-title">Let verification <span className="serif-accent">disappear</span> into the product.</h2>
               <p className="closing-sub">
                 Self-host it in minutes. Five endpoints, two flows, zero
                 verification logic left for you to write.
